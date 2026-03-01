@@ -1,0 +1,9 @@
+version: 2
+
+
+sources:
+ - name: netflix_raw
+   database: NETFLIX_DB
+   schema: RAW
+   tables:
+     - name: NETFLIX_TITLESS

@@ -1,0 +1,13 @@
+version: 2
+sources:
+ - name: s3rawsrc
+   database: mydata
+   schema: rawdata
+   tables:
+    - name: mailed_data
+      columns:
+       - name: email_id
+         description: contains email of a contact
+         tests:
+          - not_null
+          - unique

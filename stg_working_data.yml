@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: my_raw_source
+    database: mydata
+    schema: rawdata
+
+    tables:
+     - name: working_data
+       columns:
+        - name: email_id
+          description: primary key of the table
+          tests:
+           - not_null
+           - unique
