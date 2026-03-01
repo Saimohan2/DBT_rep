@@ -1,15 +1,18 @@
 with daywise as(select dayname(initial) as day,
-    sum(case when initial_status in ('WARM','POSITIVE','NEGATIVE')then 1 else 0 end) as responses, count(*) as total
+    sum(case when initial_status in ('WARM','POSITIVE','NEGATIVE')then 1 else 0 end) as responses,
+        count(*) as total
 from netflix_db.dbt_smohan.bulkload
 group by dayname(initial)
 union all
 select dayname(fup1) as day,
-    sum(case when fup1_status in ('WARM','POSITIVE','NEGATIVE')then 1 else 0 end) as responses, count(*) as total
+    sum(case when fup1_status in ('WARM','POSITIVE','NEGATIVE')then 1 else 0 end) as responses,
+        count(*) as total
 from netflix_db.dbt_smohan.bulkload
 group by dayname(fup1)
 union all
 select dayname(fup2) as day,
-    sum(case when fup2_status in ('WARM','POSITIVE','NEGATIVE')then 1 else 0 end) as responses, count(*) as total
+    sum(case when fup2_status in ('WARM','POSITIVE','NEGATIVE')then 1 else 0 end) as responses,
+        count(*) as total
 from netflix_db.dbt_smohan.bulkload
 where fup2 is not null
 group by dayname(fup2)),
