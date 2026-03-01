@@ -15,16 +15,19 @@ where fup2 is not null
 group by dayname(fup2)),
 
 ranked as(select day, responses, mails_sent, response_rate,
-    row_number() over(order by response_rate desc, mails_sent) as productive_rank
+    row_number()
+        over(order by response_rate desc, mails_sent) as productive_rank
 from(select day, sum(responses) as responses, sum(total) as mails_sent,
     100.0*sum(responses)/sum(total) as response_rate
-from daywise
-group by day)t
+    from daywise
+    group by day)t
 union all
-select 'Overall', sum(responses), sum(total), 100.0*sum(responses)/sum(total), null
+select 'Overall', sum(responses), sum(total),
+    100.0*sum(responses)/sum(total), null
 from daywise)
 
-select day, responses, round(response_rate,2) as response_rate, productive_rank
+select day, responses,
+    round(response_rate,2) as response_rate, productive_rank
 from ranked
 where response_rate>(select response_rate
                      from ranked
