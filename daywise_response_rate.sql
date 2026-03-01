@@ -12,16 +12,21 @@ select dayname(fup2) as day,
     sum(case when fup2_status in ('WARM','POSITIVE','NEGATIVE')then 1 else 0 end) as responses, count(*) as total
 from netflix_db.dbt_smohan.bulkload
 where fup2 is not null
-group by dayname(fup2))
+group by dayname(fup2)),
 
-select day, responses, mails_sent, response_rate,
+ranked as(select day, responses, mails_sent, response_rate,
     row_number() over(order by response_rate desc, mails_sent) as productive_rank
 from(select day, sum(responses) as responses, sum(total) as mails_sent,
-    concat(round(100.0*sum(responses)/sum(total),2),'','%') as response_rate
+    100.0*sum(responses)/sum(total) as response_rate
 from daywise
-group by day
-order by response_rate desc)t
+group by day)t
 union all
-select 'Overall', sum(responses), sum(total), concat(100.0*sum(responses)/sum(total),'','%'), 6
-from daywise
+select 'Overall', sum(responses), sum(total), 100.0*sum(responses)/sum(total), null
+from daywise)
+
+select day, responses, round(response_rate,2) as response_rate, productive_rank
+from ranked
+where response_rate>(select response_rate
+                     from ranked
+                     where day='Overall')
 order by productive_rank;
